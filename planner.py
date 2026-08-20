@@ -1,29 +1,84 @@
 from llm_client import ask_llm
 
-def plan_next_action(target_ip, findings, history):
-    print("\n[PLANNER] Planning next action...")
 
-    # Only keep last 4 history items to keep prompt short
+def plan_next_action(target_ip, findings, history, log_callback=None):
+
+    def log(message):
+        print(message)
+
+        if log_callback:
+            log_callback(message)
+
+    log("[PLANNER] Planning next reconnaissance action...")
+
     recent_history = history[-4:] if len(history) > 4 else history
+
     history_text = "\n".join(recent_history)
 
-    prompt = f"""You are a penetration tester. Target: {target_ip}
+    prompt = f"""
+You are an authorized penetration-testing assistant operating
+inside an isolated security laboratory.
 
-Recent actions:
+Target:
+{target_ip}
+
+Recent activity:
 {history_text}
 
 Latest findings:
 {findings}
 
-Reply with ONE shell command to run next. No explanation. No extra words.
-If testing is complete, reply: DONE"""
+Choose ONE additional Nmap reconnaissance command.
 
-    result = ask_llm(prompt)
+Allowed command format examples:
 
-    for line in result.strip().split('\n'):
+nmap -sV -p PORT {target_ip}
+
+or:
+
+nmap -sV -p PORT1,PORT2 {target_ip}
+
+Do not provide:
+- exploitation commands
+- shell commands
+- file operations
+- download commands
+- privilege escalation commands
+- commands against another IP
+
+If no additional reconnaissance is necessary, reply exactly:
+
+DONE
+
+Return ONLY the Nmap command or DONE.
+"""
+
+    result = ask_llm(prompt).strip()
+
+    if result.startswith("[LLM ERROR]"):
+        log(result)
+        return "DONE"
+
+    if result.upper() == "DONE":
+        log("[PLANNER] Testing complete.")
+        return "DONE"
+
+    # Find the first line that looks like an Nmap command.
+    for line in result.splitlines():
+
         line = line.strip()
-        if line and not line.startswith('#'):
-            print(f"[PLANNER] Next: {line}")
-            return line
 
+        if not line:
+            continue
+
+        if line.lower().startswith("nmap "):
+
+            # Make sure the target appears in the command.
+            if target_ip in line:
+
+                log(f"[PLANNER] Next action: {line}")
+
+                return line
+
+    log("[PLANNER] No valid Nmap command returned.")
     return "DONE"
