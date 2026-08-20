@@ -90,7 +90,7 @@ if "running" not in st.session_state:
 
 with st.sidebar:
 
-    st.title("🛡️ AutoSec")
+    st.title("🛡️ AutoSecs")
 
     st.caption(
         "AI-Assisted Security Platform"
