@@ -61,7 +61,7 @@ def validate_command(command, target_ip):
     return True, "Command accepted."
 
 
-def run_command(command, target_ip=None, timeout=120, log_callback=None):
+def run_command(command, target_ip=None, timeout=60, log_callback=None):
     """
     Execute an approved command.
 
