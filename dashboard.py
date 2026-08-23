@@ -254,53 +254,53 @@ with st.sidebar:
     # ========================================================
 
     # ========================================================
-# SYSTEM STATUS
-# ========================================================
-
-if ollama_online:
-    system_status = "🟢 ONLINE"
-    system_message = "Ollama is reachable"
-else:
-    system_status = "🔴 OFFLINE"
-    system_message = "Ollama is not reachable"
-
-st.markdown(
-    f"""
-    <div style="
-        background-color:#020617;
-        padding:14px;
-        border-radius:8px;
-        border:1px solid #1e293b;
-        margin-bottom:10px;
-    ">
-
+    # SYSTEM STATUS
+    # ========================================================
+    
+    if ollama_online:
+        system_status = "🟢 ONLINE"
+        system_message = "Ollama is reachable"
+    else:
+        system_status = "🔴 OFFLINE"
+        system_message = "Ollama is not reachable"
+    
+    st.markdown(
+        f"""
         <div style="
-            color:#64748b;
-            font-size:12px;
+            background-color:#020617;
+            padding:14px;
+            border-radius:8px;
+            border:1px solid #1e293b;
+            margin-bottom:10px;
         ">
-            SYSTEM STATUS
+    
+            <div style="
+                color:#64748b;
+                font-size:12px;
+            ">
+                SYSTEM STATUS
+            </div>
+    
+            <div style="
+                color:#e2e8f0;
+                font-weight:600;
+                margin-top:8px;
+            ">
+                {system_status}
+            </div>
+    
+            <div style="
+                color:#64748b;
+                font-size:11px;
+                margin-top:5px;
+            ">
+                {system_message}
+            </div>
+    
         </div>
-
-        <div style="
-            color:#e2e8f0;
-            font-weight:600;
-            margin-top:8px;
-        ">
-            {system_status}
-        </div>
-
-        <div style="
-            color:#64748b;
-            font-size:11px;
-            margin-top:5px;
-        ">
-            {system_message}
-        </div>
-
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+        """,
+        unsafe_allow_html=True
+    )
 
 
 # ========================================================
