@@ -1,8 +1,34 @@
 import streamlit as st
 import html
+import requests
 
 from agent import run_agent
 
+
+def check_ollama_status():
+    try:
+        response = requests.get(
+            "http://127.0.0.1:11434/api/tags",
+            timeout=3
+        )
+
+        if response.status_code == 200:
+
+            data = response.json()
+
+            models = data.get("models", [])
+
+            model_available = any(
+                model.get("name", "").startswith("llama3.2")
+                for model in models
+            )
+
+            return True, model_available
+
+        return False, False
+
+    except requests.exceptions.RequestException:
+        return False, False
 
 # ============================================================
 # PAGE CONFIGURATION
@@ -188,6 +214,9 @@ if "running" not in st.session_state:
     st.session_state.running = False
 
 
+ollama_online, llama_available = check_ollama_status()
+
+
 # ============================================================
 # SIDEBAR
 # ============================================================
@@ -215,22 +244,47 @@ with st.sidebar:
     st.markdown("---")
 
     # FIXED SIDEBAR STATUS BOX
-    st.markdown(
-        '<div style="background-color:#020617;'
-        'padding:14px;'
-        'border-radius:8px;'
-        'border:1px solid #1e293b;">'
-        '<div style="color:#64748b;font-size:12px;">'
-        'SYSTEM STATUS'
-        '</div>'
-        '<div style="color:#22c55e;'
-        'font-weight:600;'
-        'margin-top:8px;">'
-        '● ONLINE'
-        '</div>'
-        '</div>',
-        unsafe_allow_html=True
-    )
+    if ollama_online:
+    system_status = "🟢 ONLINE"
+    system_message = "Ollama is reachable"
+else:
+    system_status = "🔴 OFFLINE"
+    system_message = "Ollama is not reachable"
+
+st.markdown(
+    f"""
+    <div style="
+        background-color:#020617;
+        padding:14px;
+        border-radius:8px;
+        border:1px solid #1e293b;
+    ">
+        <div style="
+            color:#64748b;
+            font-size:12px;
+        ">
+            SYSTEM STATUS
+        </div>
+
+        <div style="
+            color:#e2e8f0;
+            font-weight:600;
+            margin-top:8px;
+        ">
+            {system_status}
+        </div>
+
+        <div style="
+            color:#64748b;
+            font-size:11px;
+            margin-top:5px;
+        ">
+            {system_message}
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
