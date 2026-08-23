@@ -249,21 +249,18 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # ========================================================
-    # SYSTEM STATUS
-    # ========================================================
 
     # ========================================================
     # SYSTEM STATUS
     # ========================================================
-    
+
     if ollama_online:
         system_status = "🟢 ONLINE"
         system_message = "Ollama is reachable"
     else:
         system_status = "🔴 OFFLINE"
         system_message = "Ollama is not reachable"
-    
+
     st.markdown(
         f"""
         <div style="
@@ -273,14 +270,14 @@ with st.sidebar:
             border:1px solid #1e293b;
             margin-bottom:10px;
         ">
-    
+
             <div style="
                 color:#64748b;
                 font-size:12px;
             ">
                 SYSTEM STATUS
             </div>
-    
+
             <div style="
                 color:#e2e8f0;
                 font-weight:600;
@@ -288,7 +285,7 @@ with st.sidebar:
             ">
                 {system_status}
             </div>
-    
+
             <div style="
                 color:#64748b;
                 font-size:11px;
@@ -296,73 +293,36 @@ with st.sidebar:
             ">
                 {system_message}
             </div>
-    
+
         </div>
         """,
         unsafe_allow_html=True
     )
 
 
-# ========================================================
-# AI MODEL STATUS
-# ========================================================
+    # ========================================================
+    # AI MODEL STATUS
+    # ========================================================
 
-if ollama_online and llama_available:
-    model_status = "🟢 LLAMA 3.2 AVAILABLE"
-    model_color = "#22c55e"
+    if ollama_online and llama_available:
+        model_status = "🟢 LLAMA 3.2 AVAILABLE"
+        model_color = "#22c55e"
 
-elif ollama_online:
-    model_status = "🟡 MODEL NOT FOUND"
-    model_color = "#f59e0b"
+    elif ollama_online:
+        model_status = "🟡 MODEL NOT FOUND"
+        model_color = "#f59e0b"
 
-else:
-    model_status = "⚫ UNAVAILABLE"
-    model_color = "#64748b"
-
-
-st.markdown(
-    f"""
-    <div style="
-        background-color:#020617;
-        padding:14px;
-        border-radius:8px;
-        border:1px solid #1e293b;
-    ">
-
-        <div style="
-            color:#64748b;
-            font-size:12px;
-        ">
-            AI MODEL
-        </div>
-
-        <div style="
-            color:{model_color};
-            font-weight:600;
-            margin-top:8px;
-        ">
-            {model_status}
-        </div>
-
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
- # ========================================================
- # MODEL STATUS
- # ========================================================
-
-if ollama_online and llama_available:
+    else:
+        model_status = "⚫ UNAVAILABLE"
+        model_color = "#64748b"
 
     st.markdown(
-        """
+        f"""
         <div style="
             background-color:#020617;
             padding:14px;
             border-radius:8px;
             border:1px solid #1e293b;
-            margin-top:10px;
         ">
 
             <div style="
@@ -373,81 +333,17 @@ if ollama_online and llama_available:
             </div>
 
             <div style="
-                color:#22c55e;
+                color:{model_color};
                 font-weight:600;
                 margin-top:8px;
             ">
-                🟢 LLAMA 3.2 AVAILABLE
+                {model_status}
             </div>
 
         </div>
         """,
         unsafe_allow_html=True
     )
-
-    elif ollama_online:
-
-        st.markdown(
-            """
-            <div style="
-                background-color:#020617;
-                padding:14px;
-                border-radius:8px;
-                border:1px solid #1e293b;
-                margin-top:10px;
-            ">
-
-                <div style="
-                    color:#64748b;
-                    font-size:12px;
-                ">
-                    AI MODEL
-                </div>
-
-                <div style="
-                    color:#f59e0b;
-                    font-weight:600;
-                    margin-top:8px;
-                ">
-                    🟡 MODEL NOT FOUND
-                </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    else:
-
-        st.markdown(
-            """
-            <div style="
-                background-color:#020617;
-                padding:14px;
-                border-radius:8px;
-                border:1px solid #1e293b;
-                margin-top:10px;
-            ">
-
-                <div style="
-                    color:#64748b;
-                    font-size:12px;
-                ">
-                    AI MODEL
-                </div>
-
-                <div style="
-                    color:#64748b;
-                    font-weight:600;
-                    margin-top:8px;
-                ">
-                    ⚫ UNAVAILABLE
-                </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
 
 
 # ============================================================
