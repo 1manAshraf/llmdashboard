@@ -243,13 +243,13 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # FIXED SIDEBAR STATUS BOX
-    if ollama_online:
-        system_status = "🟢 ONLINE"
-        system_message = "Ollama is reachable"
-    else:
-        system_status = "🔴 OFFLINE"
-        system_message = "Ollama is not reachable"
+# FIXED SIDEBAR STATUS BOX
+if ollama_online:
+    system_status = "🟢 ONLINE"
+    system_message = "Ollama is reachable"
+else:
+    system_status = "🔴 OFFLINE"
+    system_message = "Ollama is not reachable"
 
 st.markdown(
     f"""
