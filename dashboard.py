@@ -17,23 +17,16 @@ st.set_page_config(
 
 
 # ============================================================
-# DARK CYBERSECURITY THEME
+# DARK THEME
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <style>
-
-/* =========================================================
-   GLOBAL
-   ========================================================= */
 
 .stApp {
     background-color: #0b1120;
     color: #e2e8f0;
-}
-
-.main {
-    background-color: #0b1120;
 }
 
 .block-container {
@@ -41,10 +34,7 @@ st.markdown("""
     padding-bottom: 2rem;
 }
 
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
+/* SIDEBAR */
 
 [data-testid="stSidebar"] {
     background-color: #111827;
@@ -55,18 +45,10 @@ st.markdown("""
     color: #e2e8f0;
 }
 
-[data-testid="stSidebar"] hr {
-    border-color: #334155;
-}
-
-
-/* =========================================================
-   HEADINGS
-   ========================================================= */
+/* HEADINGS */
 
 h1 {
     color: #f8fafc !important;
-    font-weight: 700 !important;
 }
 
 h2 {
@@ -77,19 +59,13 @@ h3 {
     color: #cbd5e1 !important;
 }
 
-
-/* =========================================================
-   NORMAL TEXT
-   ========================================================= */
+/* TEXT */
 
 p {
     color: #cbd5e1;
 }
 
-
-/* =========================================================
-   INPUT BOX
-   ========================================================= */
+/* INPUT */
 
 .stTextInput label {
     color: #cbd5e1 !important;
@@ -108,10 +84,7 @@ p {
     box-shadow: 0 0 0 1px #3b82f6 !important;
 }
 
-
-/* =========================================================
-   BUTTON
-   ========================================================= */
+/* BUTTON */
 
 .stButton > button {
     background-color: #2563eb !important;
@@ -120,24 +93,13 @@ p {
     border-radius: 8px !important;
     font-weight: 600 !important;
     min-height: 42px;
-    transition: 0.2s;
 }
 
 .stButton > button:hover {
     background-color: #1d4ed8 !important;
-    color: white !important;
-    border: none !important;
 }
 
-.stButton > button:disabled {
-    background-color: #334155 !important;
-    color: #94a3b8 !important;
-}
-
-
-/* =========================================================
-   TERMINAL
-   ========================================================= */
+/* TERMINAL */
 
 .terminal-container {
     background-color: #020617;
@@ -148,28 +110,24 @@ p {
     min-height: 320px;
     max-height: 500px;
     overflow-y: auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
 .terminal-header {
     color: #64748b;
-    font-family: "Courier New", monospace;
+    font-family: monospace;
     font-size: 13px;
     margin-bottom: 12px;
 }
 
 .terminal-content {
     color: #38bdf8;
-    font-family: "Courier New", monospace;
+    font-family: monospace;
     font-size: 14px;
     line-height: 1.6;
     white-space: pre-wrap;
 }
 
-
-/* =========================================================
-   STATUS CARDS
-   ========================================================= */
+/* STATUS CARD */
 
 .status-card {
     background-color: #111827;
@@ -188,54 +146,12 @@ p {
 
 .status-value {
     color: #f8fafc;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     margin-top: 5px;
 }
 
-
-/* =========================================================
-   DIVIDERS
-   ========================================================= */
-
-hr {
-    border-color: #1e293b !important;
-}
-
-
-/* =========================================================
-   SELECT / RADIO
-   ========================================================= */
-
-[data-testid="stRadio"] label {
-    color: #cbd5e1 !important;
-}
-
-
-/* =========================================================
-   TEXT AREA
-   ========================================================= */
-
-.stTextArea textarea {
-    background-color: #020617 !important;
-    color: #cbd5e1 !important;
-    border: 1px solid #334155 !important;
-    font-family: "Courier New", monospace !important;
-}
-
-
-/* =========================================================
-   INFO / SUCCESS / WARNING
-   ========================================================= */
-
-[data-testid="stAlert"] {
-    border-radius: 8px;
-}
-
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
+/* FOOTER */
 
 .footer {
     text-align: center;
@@ -246,7 +162,9 @@ hr {
 }
 
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
@@ -278,15 +196,13 @@ with st.sidebar:
 
     st.title("🛡️ AutoSec")
 
-    st.caption(
-        "AI-Assisted Security Platform"
-    )
+    st.caption("AI-Assisted Security Platform")
 
     st.markdown("---")
 
     menu_selection = st.radio(
         "Navigation",
-        options=[
+        [
             "🎯 Penetrate!",
             "📊 Reports",
             "⚙️ Settings",
@@ -298,33 +214,27 @@ with st.sidebar:
 
     st.markdown("---")
 
+    # FIXED SIDEBAR STATUS BOX
     st.markdown(
-        """
-        <div style="
-            background-color:#020617;
-            padding:12px;
-            border-radius:8px;
-            border:1px solid #1e293b;
-        ">
-            <div style="color:#64748b;font-size:12px;">
-                SYSTEM STATUS
-            </div>
-
-            <div style="
-                color:#22c55e;
-                font-weight:600;
-                margin-top:5px;
-            ">
-                ● ONLINE
-            </div>
-        </div>
-        """,
+        '<div style="background-color:#020617;'
+        'padding:14px;'
+        'border-radius:8px;'
+        'border:1px solid #1e293b;">'
+        '<div style="color:#64748b;font-size:12px;">'
+        'SYSTEM STATUS'
+        '</div>'
+        '<div style="color:#22c55e;'
+        'font-weight:600;'
+        'margin-top:8px;">'
+        '● ONLINE'
+        '</div>'
+        '</div>',
         unsafe_allow_html=True
     )
 
 
 # ============================================================
-# PENETRATION PAGE
+# PENETRATE PAGE
 # ============================================================
 
 if menu_selection == "🎯 Penetrate!":
@@ -338,7 +248,6 @@ if menu_selection == "🎯 Penetrate!":
 
     st.markdown("---")
 
-
     # ========================================================
     # STATUS CARDS
     # ========================================================
@@ -346,69 +255,44 @@ if menu_selection == "🎯 Penetrate!":
     col1, col2, col3 = st.columns(3)
 
     with col1:
-
         st.markdown(
-            """
-            <div class="status-card">
-                <div class="status-title">
-                    Agent
-                </div>
-
-                <div class="status-value">
-                    🤖 AI Agent
-                </div>
-            </div>
-            """,
+            '<div class="status-card">'
+            '<div class="status-title">AGENT</div>'
+            '<div class="status-value">🤖 AI Agent</div>'
+            '</div>',
             unsafe_allow_html=True
         )
 
     with col2:
 
-        status = (
-            "RUNNING"
-            if st.session_state.running
-            else "READY"
-        )
+        if st.session_state.running:
+            status_text = "🟡 RUNNING"
+        else:
+            status_text = "🟢 READY"
 
         st.markdown(
-            f"""
-            <div class="status-card">
-                <div class="status-title">
-                    Status
-                </div>
-
-                <div class="status-value">
-                    {"🟢" if status == "READY" else "🟡"} {status}
-                </div>
-            </div>
-            """,
+            '<div class="status-card">'
+            '<div class="status-title">STATUS</div>'
+            f'<div class="status-value">{status_text}</div>'
+            '</div>',
             unsafe_allow_html=True
         )
 
     with col3:
-
         st.markdown(
-            """
-            <div class="status-card">
-                <div class="status-title">
-                    Engine
-                </div>
-
-                <div class="status-value">
-                    Ollama
-                </div>
-            </div>
-            """,
+            '<div class="status-card">'
+            '<div class="status-title">ENGINE</div>'
+            '<div class="status-value">Ollama</div>'
+            '</div>',
             unsafe_allow_html=True
         )
 
 
+    # ========================================================
+    # TARGET
+    # ========================================================
+
     st.markdown("---")
-
-
-    # ========================================================
-    # TARGET INPUT
-    # ========================================================
 
     st.subheader("Target Configuration")
 
@@ -422,10 +306,7 @@ if menu_selection == "🎯 Penetrate!":
         target_ip = st.text_input(
             "Target IP Address",
             placeholder="e.g. 192.168.56.101",
-            help=(
-                "Enter the IP address of your "
-                "authorized isolated lab target."
-            )
+            help="Enter the IP address of your authorized lab target."
         )
 
     with col2:
@@ -463,11 +344,6 @@ if menu_selection == "🎯 Penetrate!":
 
             terminal_placeholder = st.empty()
 
-
-            # ------------------------------------------------
-            # DASHBOARD LOG CALLBACK
-            # ------------------------------------------------
-
             def dashboard_log(message):
 
                 st.session_state.logs += (
@@ -479,22 +355,16 @@ if menu_selection == "🎯 Penetrate!":
                 )
 
                 terminal_placeholder.markdown(
-                    f"""
-                    <div class="terminal-container">
-
-                        <div class="terminal-header">
-                            AutoSec Terminal
-                        </div>
-
-                        <div class="terminal-content">
-                            {safe_logs}
-                        </div>
-
-                    </div>
-                    """,
+                    '<div class="terminal-container">'
+                    '<div class="terminal-header">'
+                    'AutoSec Terminal'
+                    '</div>'
+                    '<div class="terminal-content">'
+                    f'{safe_logs}'
+                    '</div>'
+                    '</div>',
                     unsafe_allow_html=True
                 )
-
 
             try:
 
@@ -509,7 +379,6 @@ if menu_selection == "🎯 Penetrate!":
                 )
 
                 st.session_state.report = report
-
                 st.session_state.filename = filename
 
                 dashboard_log(
@@ -521,7 +390,7 @@ if menu_selection == "🎯 Penetrate!":
                 )
 
                 st.success(
-                    "Security assessment completed successfully."
+                    "Security assessment completed."
                 )
 
             except Exception as e:
@@ -544,7 +413,7 @@ if menu_selection == "🎯 Penetrate!":
 
 
     # ========================================================
-    # TERMINAL OUTPUT
+    # TERMINAL
     # ========================================================
 
     safe_logs = html.escape(
@@ -552,25 +421,20 @@ if menu_selection == "🎯 Penetrate!":
     )
 
     st.markdown(
-        f"""
-        <div class="terminal-container">
-
-            <div class="terminal-header">
-                AutoSec Terminal
-            </div>
-
-            <div class="terminal-content">
-                {safe_logs}
-            </div>
-
-        </div>
-        """,
+        '<div class="terminal-container">'
+        '<div class="terminal-header">'
+        'AutoSec Terminal'
+        '</div>'
+        '<div class="terminal-content">'
+        f'{safe_logs}'
+        '</div>'
+        '</div>',
         unsafe_allow_html=True
     )
 
 
 # ============================================================
-# REPORTS PAGE
+# REPORTS
 # ============================================================
 
 elif menu_selection == "📊 Reports":
@@ -578,8 +442,7 @@ elif menu_selection == "📊 Reports":
     st.title("📊 Assessment Reports")
 
     st.write(
-        "View the latest security assessment generated "
-        "by the AutoSec analysis engine."
+        "View the latest security assessment report."
     )
 
     st.markdown("---")
@@ -605,13 +468,12 @@ elif menu_selection == "📊 Reports":
     else:
 
         st.info(
-            "No assessment reports available yet. "
-            "Run an assessment from the Penetrate page."
+            "No assessment reports available yet."
         )
 
 
 # ============================================================
-# SETTINGS PAGE
+# SETTINGS
 # ============================================================
 
 elif menu_selection == "⚙️ Settings":
@@ -646,7 +508,7 @@ elif menu_selection == "⚙️ Settings":
 
 
 # ============================================================
-# ABOUT PAGE
+# ABOUT
 # ============================================================
 
 elif menu_selection == "ℹ️ About":
@@ -665,29 +527,31 @@ elif menu_selection == "ℹ️ About":
     st.code(
         """
 Streamlit Dashboard
-        │
-        ▼
-     Agent
-        │
-   ┌────┴────┐
-   ▼         ▼
+        |
+        v
+      Agent
+        |
+   +----+----+
+   |         |
+   v         v
 Observer   Planner
-   │         │
-   └────┬────┘
-        ▼
+   |         |
+   +----+----+
+        |
+        v
       Ollama
-        │
-        ▼
+        |
+        v
      Executor
-        │
-        ▼
-   Lab Target
-        │
-        ▼
+        |
+        v
+    Lab Target
+        |
+        v
      Analyser
-        │
-        ▼
-     Report
+        |
+        v
+      Report
         """,
         language="text"
     )
@@ -698,10 +562,8 @@ Observer   Planner
 # ============================================================
 
 st.markdown(
-    """
-    <div class="footer">
-        AutoSec • Local AI-Assisted Security Assessment Platform
-    </div>
-    """,
+    '<div class="footer">'
+    'AutoSec • Local AI-Assisted Security Assessment Platform'
+    '</div>',
     unsafe_allow_html=True
 )
