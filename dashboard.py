@@ -249,7 +249,6 @@ with st.sidebar:
 
     st.markdown("---")
 
-
     # ========================================================
     # SYSTEM STATUS
     # ========================================================
@@ -264,32 +263,32 @@ with st.sidebar:
     st.markdown(
         f"""
         <div style="
-            background-color:#020617;
-            padding:14px;
-            border-radius:8px;
-            border:1px solid #1e293b;
-            margin-bottom:10px;
+            background-color: #020617;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+            margin-bottom: 10px;
         ">
 
             <div style="
-                color:#64748b;
-                font-size:12px;
+                color: #64748b;
+                font-size: 12px;
             ">
                 SYSTEM STATUS
             </div>
 
             <div style="
-                color:#e2e8f0;
-                font-weight:600;
-                margin-top:8px;
+                color: #e2e8f0;
+                font-weight: 600;
+                margin-top: 8px;
             ">
                 {system_status}
             </div>
 
             <div style="
-                color:#64748b;
-                font-size:11px;
-                margin-top:5px;
+                color: #64748b;
+                font-size: 11px;
+                margin-top: 5px;
             ">
                 {system_message}
             </div>
@@ -298,7 +297,6 @@ with st.sidebar:
         """,
         unsafe_allow_html=True
     )
-
 
     # ========================================================
     # AI MODEL STATUS
@@ -319,23 +317,23 @@ with st.sidebar:
     st.markdown(
         f"""
         <div style="
-            background-color:#020617;
-            padding:14px;
-            border-radius:8px;
-            border:1px solid #1e293b;
+            background-color: #020617;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
         ">
 
             <div style="
-                color:#64748b;
-                font-size:12px;
+                color: #64748b;
+                font-size: 12px;
             ">
                 AI MODEL
             </div>
 
             <div style="
-                color:{model_color};
-                font-weight:600;
-                margin-top:8px;
+                color: {model_color};
+                font-weight: 600;
+                margin-top: 8px;
             ">
                 {model_status}
             </div>
@@ -344,8 +342,6 @@ with st.sidebar:
         """,
         unsafe_allow_html=True
     )
-
-
 # ============================================================
 # PENETRATE PAGE
 # ============================================================
