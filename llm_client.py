@@ -1,8 +1,8 @@
 import requests
 
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = "llama3.2"
+OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
+OLLAMA_MODEL = "llama3.2:latest"
 
 
 def ask_llm(prompt):
@@ -23,10 +23,10 @@ def ask_llm(prompt):
                 "options": {
                     "temperature": 0.3,
                     "num_predict": 1024,
-                    "num_ctx": 2048
+                    "num_ctx": 4096
                 }
             },
-            timeout=300
+            timeout=600
         )
 
         response.raise_for_status()
@@ -45,7 +45,10 @@ def ask_llm(prompt):
         )
 
     except requests.exceptions.Timeout:
-        return "[LLM ERROR] Ollama request timed out."
+        return (
+            "[LLM ERROR] Ollama request timed out "
+            "after 10 minutes."
+        )
 
     except requests.exceptions.RequestException as e:
         return f"[LLM ERROR] Ollama request failed: {e}"
