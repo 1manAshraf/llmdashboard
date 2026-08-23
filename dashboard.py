@@ -349,41 +349,41 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-    # ========================================================
-    # MODEL STATUS
-    # ========================================================
+ # ========================================================
+ # MODEL STATUS
+ # ========================================================
 
-    if ollama_online and llama_available:
+if ollama_online and llama_available:
 
-        st.markdown(
-            """
+    st.markdown(
+        """
+        <div style="
+            background-color:#020617;
+            padding:14px;
+            border-radius:8px;
+            border:1px solid #1e293b;
+            margin-top:10px;
+        ">
+
             <div style="
-                background-color:#020617;
-                padding:14px;
-                border-radius:8px;
-                border:1px solid #1e293b;
-                margin-top:10px;
+                color:#64748b;
+                font-size:12px;
             ">
-
-                <div style="
-                    color:#64748b;
-                    font-size:12px;
-                ">
-                    AI MODEL
-                </div>
-
-                <div style="
-                    color:#22c55e;
-                    font-weight:600;
-                    margin-top:8px;
-                ">
-                    🟢 LLAMA 3.2 AVAILABLE
-                </div>
-
+                AI MODEL
             </div>
-            """,
-            unsafe_allow_html=True
-        )
+
+            <div style="
+                color:#22c55e;
+                font-weight:600;
+                margin-top:8px;
+            ">
+                🟢 LLAMA 3.2 AVAILABLE
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     elif ollama_online:
 
