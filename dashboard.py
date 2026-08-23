@@ -253,49 +253,101 @@ with st.sidebar:
     # SYSTEM STATUS
     # ========================================================
 
-    if ollama_online:
-        system_status = "🟢 ONLINE"
-        system_message = "Ollama is reachable"
-    else:
-        system_status = "🔴 OFFLINE"
-        system_message = "Ollama is not reachable"
+    # ========================================================
+# SYSTEM STATUS
+# ========================================================
 
-    st.markdown(
-        f"""
+if ollama_online:
+    system_status = "🟢 ONLINE"
+    system_message = "Ollama is reachable"
+else:
+    system_status = "🔴 OFFLINE"
+    system_message = "Ollama is not reachable"
+
+st.markdown(
+    f"""
+    <div style="
+        background-color:#020617;
+        padding:14px;
+        border-radius:8px;
+        border:1px solid #1e293b;
+        margin-bottom:10px;
+    ">
+
         <div style="
-            background-color:#020617;
-            padding:14px;
-            border-radius:8px;
-            border:1px solid #1e293b;
+            color:#64748b;
+            font-size:12px;
         ">
-
-            <div style="
-                color:#64748b;
-                font-size:12px;
-            ">
-                SYSTEM STATUS
-            </div>
-
-            <div style="
-                color:#e2e8f0;
-                font-weight:600;
-                margin-top:8px;
-            ">
-                {system_status}
-            </div>
-
-            <div style="
-                color:#64748b;
-                font-size:11px;
-                margin-top:5px;
-            ">
-                {system_message}
-            </div>
-
+            SYSTEM STATUS
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+
+        <div style="
+            color:#e2e8f0;
+            font-weight:600;
+            margin-top:8px;
+        ">
+            {system_status}
+        </div>
+
+        <div style="
+            color:#64748b;
+            font-size:11px;
+            margin-top:5px;
+        ">
+            {system_message}
+        </div>
+
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# ========================================================
+# AI MODEL STATUS
+# ========================================================
+
+if ollama_online and llama_available:
+    model_status = "🟢 LLAMA 3.2 AVAILABLE"
+    model_color = "#22c55e"
+
+elif ollama_online:
+    model_status = "🟡 MODEL NOT FOUND"
+    model_color = "#f59e0b"
+
+else:
+    model_status = "⚫ UNAVAILABLE"
+    model_color = "#64748b"
+
+
+st.markdown(
+    f"""
+    <div style="
+        background-color:#020617;
+        padding:14px;
+        border-radius:8px;
+        border:1px solid #1e293b;
+    ">
+
+        <div style="
+            color:#64748b;
+            font-size:12px;
+        ">
+            AI MODEL
+        </div>
+
+        <div style="
+            color:{model_color};
+            font-weight:600;
+            margin-top:8px;
+        ">
+            {model_status}
+        </div>
+
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
     # ========================================================
     # MODEL STATUS
