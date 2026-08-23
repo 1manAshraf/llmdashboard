@@ -1,3 +1,4 @@
+import time
 import requests
 
 
@@ -13,6 +14,11 @@ def ask_llm(prompt):
         str: LLM response or a readable error message.
     """
 
+    print("\n[LLM] Sending request to Ollama...")
+    print(f"[LLM] Prompt length: {len(prompt)} characters")
+
+    start_time = time.time()
+
     try:
         response = requests.post(
             OLLAMA_URL,
@@ -22,12 +28,16 @@ def ask_llm(prompt):
                 "stream": False,
                 "options": {
                     "temperature": 0.3,
-                    "num_predict": 1024,
+                    "num_predict": 512,
                     "num_ctx": 4096
                 }
             },
             timeout=600
         )
+
+        elapsed = time.time() - start_time
+
+        print(f"[LLM] Response received in {elapsed:.2f} seconds")
 
         response.raise_for_status()
 
@@ -45,6 +55,13 @@ def ask_llm(prompt):
         )
 
     except requests.exceptions.Timeout:
+        elapsed = time.time() - start_time
+
+        print(
+            f"[LLM] Request timed out after "
+            f"{elapsed:.2f} seconds"
+        )
+
         return (
             "[LLM ERROR] Ollama request timed out "
             "after 10 minutes."
