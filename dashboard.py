@@ -225,26 +225,123 @@ ollama_online, llama_available = check_ollama_status()
 
 
 # ============================================================
-# SIDEBAR TEST
+# SIDEBAR
 # ============================================================
 
 with st.sidebar:
 
     st.title("🛡️ AutoSec")
+    st.caption("AI-Assisted Security Platform")
 
     st.markdown("---")
 
-    st.write("SIDEBAR TEST")
+    menu_selection = st.radio(
+        "Navigation",
+        [
+            "🎯 Penetrate!",
+            "📊 Reports",
+            "⚙️ Settings",
+            "ℹ️ About"
+        ],
+        index=0,
+        label_visibility="collapsed"
+    )
+
+    st.markdown("---")
+
+    # ========================================================
+    # SYSTEM STATUS
+    # ========================================================
 
     if ollama_online:
-        st.success("Ollama: ONLINE")
+        system_status = "🟢 ONLINE"
+        system_message = "Ollama is reachable"
     else:
-        st.error("Ollama: OFFLINE")
+        system_status = "🔴 OFFLINE"
+        system_message = "Ollama is not reachable"
 
-    if llama_available:
-        st.success("Llama 3.2: AVAILABLE")
+    st.markdown(
+        f"""
+        <div style="
+            background-color: #020617;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+            margin-bottom: 10px;
+        ">
+
+            <div style="
+                color: #64748b;
+                font-size: 12px;
+            ">
+                SYSTEM STATUS
+            </div>
+
+            <div style="
+                color: #e2e8f0;
+                font-weight: 600;
+                margin-top: 8px;
+            ">
+                {system_status}
+            </div>
+
+            <div style="
+                color: #64748b;
+                font-size: 11px;
+                margin-top: 5px;
+            ">
+                {system_message}
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # ========================================================
+    # AI MODEL STATUS
+    # ========================================================
+
+    if ollama_online and llama_available:
+        model_status = "🟢 LLAMA 3.2 AVAILABLE"
+        model_color = "#22c55e"
+
+    elif ollama_online:
+        model_status = "🟡 MODEL NOT FOUND"
+        model_color = "#f59e0b"
+
     else:
-        st.warning("Llama 3.2: NOT AVAILABLE")
+        model_status = "⚫ UNAVAILABLE"
+        model_color = "#64748b"
+
+    st.markdown(
+        f"""
+        <div style="
+            background-color: #020617;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+        ">
+
+            <div style="
+                color: #64748b;
+                font-size: 12px;
+            ">
+                AI MODEL
+            </div>
+
+            <div style="
+                color: {model_color};
+                font-weight: 600;
+                margin-top: 8px;
+            ">
+                {model_status}
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 # ============================================================
 # PENETRATE PAGE
 # ============================================================
