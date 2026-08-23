@@ -5,6 +5,10 @@ import requests
 from agent import run_agent
 
 
+# ============================================================
+# OLLAMA STATUS CHECK
+# ============================================================
+
 def check_ollama_status():
     try:
         response = requests.get(
@@ -13,9 +17,7 @@ def check_ollama_status():
         )
 
         if response.status_code == 200:
-
             data = response.json()
-
             models = data.get("models", [])
 
             model_available = any(
@@ -29,6 +31,7 @@ def check_ollama_status():
 
     except requests.exceptions.RequestException:
         return False, False
+
 
 # ============================================================
 # PAGE CONFIGURATION
@@ -48,147 +51,147 @@ st.set_page_config(
 
 st.markdown(
     """
-<style>
+    <style>
 
-.stApp {
-    background-color: #0b1120;
-    color: #e2e8f0;
-}
+    .stApp {
+        background-color: #0b1120;
+        color: #e2e8f0;
+    }
 
-.block-container {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-}
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
 
-/* SIDEBAR */
+    /* SIDEBAR */
 
-[data-testid="stSidebar"] {
-    background-color: #111827;
-    border-right: 1px solid #1e293b;
-}
+    [data-testid="stSidebar"] {
+        background-color: #111827;
+        border-right: 1px solid #1e293b;
+    }
 
-[data-testid="stSidebar"] * {
-    color: #e2e8f0;
-}
+    [data-testid="stSidebar"] * {
+        color: #e2e8f0;
+    }
 
-/* HEADINGS */
+    /* HEADINGS */
 
-h1 {
-    color: #f8fafc !important;
-}
+    h1 {
+        color: #f8fafc !important;
+    }
 
-h2 {
-    color: #e2e8f0 !important;
-}
+    h2 {
+        color: #e2e8f0 !important;
+    }
 
-h3 {
-    color: #cbd5e1 !important;
-}
+    h3 {
+        color: #cbd5e1 !important;
+    }
 
-/* TEXT */
+    /* TEXT */
 
-p {
-    color: #cbd5e1;
-}
+    p {
+        color: #cbd5e1;
+    }
 
-/* INPUT */
+    /* INPUT */
 
-.stTextInput label {
-    color: #cbd5e1 !important;
-    font-weight: 600;
-}
+    .stTextInput label {
+        color: #cbd5e1 !important;
+        font-weight: 600;
+    }
 
-.stTextInput input {
-    background-color: #111827 !important;
-    color: #f8fafc !important;
-    border: 1px solid #334155 !important;
-    border-radius: 8px !important;
-}
+    .stTextInput input {
+        background-color: #111827 !important;
+        color: #f8fafc !important;
+        border: 1px solid #334155 !important;
+        border-radius: 8px !important;
+    }
 
-.stTextInput input:focus {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 1px #3b82f6 !important;
-}
+    .stTextInput input:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 1px #3b82f6 !important;
+    }
 
-/* BUTTON */
+    /* BUTTON */
 
-.stButton > button {
-    background-color: #2563eb !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    min-height: 42px;
-}
+    .stButton > button {
+        background-color: #2563eb !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        min-height: 42px;
+    }
 
-.stButton > button:hover {
-    background-color: #1d4ed8 !important;
-}
+    .stButton > button:hover {
+        background-color: #1d4ed8 !important;
+    }
 
-/* TERMINAL */
+    /* TERMINAL */
 
-.terminal-container {
-    background-color: #020617;
-    border: 1px solid #1e293b;
-    border-radius: 10px;
-    padding: 18px;
-    margin-top: 10px;
-    min-height: 320px;
-    max-height: 500px;
-    overflow-y: auto;
-}
+    .terminal-container {
+        background-color: #020617;
+        border: 1px solid #1e293b;
+        border-radius: 10px;
+        padding: 18px;
+        margin-top: 10px;
+        min-height: 320px;
+        max-height: 500px;
+        overflow-y: auto;
+    }
 
-.terminal-header {
-    color: #64748b;
-    font-family: monospace;
-    font-size: 13px;
-    margin-bottom: 12px;
-}
+    .terminal-header {
+        color: #64748b;
+        font-family: monospace;
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
 
-.terminal-content {
-    color: #38bdf8;
-    font-family: monospace;
-    font-size: 14px;
-    line-height: 1.6;
-    white-space: pre-wrap;
-}
+    .terminal-content {
+        color: #38bdf8;
+        font-family: monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+    }
 
-/* STATUS CARD */
+    /* STATUS CARD */
 
-.status-card {
-    background-color: #111827;
-    border: 1px solid #1e293b;
-    border-radius: 10px;
-    padding: 18px;
-    margin-bottom: 15px;
-}
+    .status-card {
+        background-color: #111827;
+        border: 1px solid #1e293b;
+        border-radius: 10px;
+        padding: 18px;
+        margin-bottom: 15px;
+    }
 
-.status-title {
-    color: #64748b;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
+    .status-title {
+        color: #64748b;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
 
-.status-value {
-    color: #f8fafc;
-    font-size: 20px;
-    font-weight: 700;
-    margin-top: 5px;
-}
+    .status-value {
+        color: #f8fafc;
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 5px;
+    }
 
-/* FOOTER */
+    /* FOOTER */
 
-.footer {
-    text-align: center;
-    color: #475569;
-    font-size: 12px;
-    margin-top: 40px;
-    padding: 15px;
-}
+    .footer {
+        text-align: center;
+        color: #475569;
+        font-size: 12px;
+        margin-top: 40px;
+        padding: 15px;
+    }
 
-</style>
-""",
+    </style>
+    """,
     unsafe_allow_html=True
 )
 
@@ -214,6 +217,10 @@ if "running" not in st.session_state:
     st.session_state.running = False
 
 
+# ============================================================
+# CHECK OLLAMA
+# ============================================================
+
 ollama_online, llama_available = check_ollama_status()
 
 
@@ -224,7 +231,6 @@ ollama_online, llama_available = check_ollama_status()
 with st.sidebar:
 
     st.title("🛡️ AutoSec")
-
     st.caption("AI-Assisted Security Platform")
 
     st.markdown("---")
@@ -243,7 +249,10 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # FIXED SIDEBAR STATUS BOX
+    # ========================================================
+    # SYSTEM STATUS
+    # ========================================================
+
     if ollama_online:
         system_status = "🟢 ONLINE"
         system_message = "Ollama is reachable"
@@ -251,40 +260,142 @@ with st.sidebar:
         system_status = "🔴 OFFLINE"
         system_message = "Ollama is not reachable"
 
-st.markdown(
-    f"""
-    <div style="
-        background-color:#020617;
-        padding:14px;
-        border-radius:8px;
-        border:1px solid #1e293b;
-    ">
+    st.markdown(
+        f"""
         <div style="
-            color:#64748b;
-            font-size:12px;
+            background-color:#020617;
+            padding:14px;
+            border-radius:8px;
+            border:1px solid #1e293b;
         ">
-            SYSTEM STATUS
-        </div>
 
-        <div style="
-            color:#e2e8f0;
-            font-weight:600;
-            margin-top:8px;
-        ">
-            {system_status}
-        </div>
+            <div style="
+                color:#64748b;
+                font-size:12px;
+            ">
+                SYSTEM STATUS
+            </div>
 
-        <div style="
-            color:#64748b;
-            font-size:11px;
-            margin-top:5px;
-        ">
-            {system_message}
+            <div style="
+                color:#e2e8f0;
+                font-weight:600;
+                margin-top:8px;
+            ">
+                {system_status}
+            </div>
+
+            <div style="
+                color:#64748b;
+                font-size:11px;
+                margin-top:5px;
+            ">
+                {system_message}
+            </div>
+
         </div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+        """,
+        unsafe_allow_html=True
+    )
+
+    # ========================================================
+    # MODEL STATUS
+    # ========================================================
+
+    if ollama_online and llama_available:
+
+        st.markdown(
+            """
+            <div style="
+                background-color:#020617;
+                padding:14px;
+                border-radius:8px;
+                border:1px solid #1e293b;
+                margin-top:10px;
+            ">
+
+                <div style="
+                    color:#64748b;
+                    font-size:12px;
+                ">
+                    AI MODEL
+                </div>
+
+                <div style="
+                    color:#22c55e;
+                    font-weight:600;
+                    margin-top:8px;
+                ">
+                    🟢 LLAMA 3.2 AVAILABLE
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    elif ollama_online:
+
+        st.markdown(
+            """
+            <div style="
+                background-color:#020617;
+                padding:14px;
+                border-radius:8px;
+                border:1px solid #1e293b;
+                margin-top:10px;
+            ">
+
+                <div style="
+                    color:#64748b;
+                    font-size:12px;
+                ">
+                    AI MODEL
+                </div>
+
+                <div style="
+                    color:#f59e0b;
+                    font-weight:600;
+                    margin-top:8px;
+                ">
+                    🟡 MODEL NOT FOUND
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    else:
+
+        st.markdown(
+            """
+            <div style="
+                background-color:#020617;
+                padding:14px;
+                border-radius:8px;
+                border:1px solid #1e293b;
+                margin-top:10px;
+            ">
+
+                <div style="
+                    color:#64748b;
+                    font-size:12px;
+                ">
+                    AI MODEL
+                </div>
+
+                <div style="
+                    color:#64748b;
+                    font-weight:600;
+                    margin-top:8px;
+                ">
+                    ⚫ UNAVAILABLE
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 
 # ============================================================
@@ -302,6 +413,7 @@ if menu_selection == "🎯 Penetrate!":
 
     st.markdown("---")
 
+
     # ========================================================
     # STATUS CARDS
     # ========================================================
@@ -309,6 +421,7 @@ if menu_selection == "🎯 Penetrate!":
     col1, col2, col3 = st.columns(3)
 
     with col1:
+
         st.markdown(
             '<div class="status-card">'
             '<div class="status-title">AGENT</div>'
@@ -333,6 +446,7 @@ if menu_selection == "🎯 Penetrate!":
         )
 
     with col3:
+
         st.markdown(
             '<div class="status-card">'
             '<div class="status-title">ENGINE</div>'
@@ -343,7 +457,7 @@ if menu_selection == "🎯 Penetrate!":
 
 
     # ========================================================
-    # TARGET
+    # TARGET CONFIGURATION
     # ========================================================
 
     st.markdown("---")
@@ -398,6 +512,11 @@ if menu_selection == "🎯 Penetrate!":
 
             terminal_placeholder = st.empty()
 
+
+            # =================================================
+            # DASHBOARD LOG FUNCTION
+            # =================================================
+
             def dashboard_log(message):
 
                 st.session_state.logs += (
@@ -419,6 +538,11 @@ if menu_selection == "🎯 Penetrate!":
                     '</div>',
                     unsafe_allow_html=True
                 )
+
+
+            # =================================================
+            # RUN AGENT
+            # =================================================
 
             try:
 
@@ -583,7 +707,7 @@ elif menu_selection == "ℹ️ About":
 Streamlit Dashboard
         |
         v
-      Agent
+     Agent
         |
    +----+----+
    |         |
