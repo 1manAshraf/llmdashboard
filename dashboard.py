@@ -231,7 +231,7 @@ ollama_online, llama_available = check_ollama_status()
 with st.sidebar:
 
     st.title("🛡️ AutoSec")
-    st.caption("AI-Assisted Security Platform")
+    st.caption("LLM-Integrated Security Platform")
 
     st.markdown("---")
 
@@ -369,7 +369,7 @@ if menu_selection == "🎯 Penetrate!":
         st.markdown(
             '<div class="status-card">'
             '<div class="status-title">AGENT</div>'
-            '<div class="status-value">🤖 AI Agent</div>'
+            '<div class="status-value">🤖 LLM Agent</div>'
             '</div>',
             unsafe_allow_html=True
         )
