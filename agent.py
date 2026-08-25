@@ -1,10 +1,10 @@
 import time
 
-from evidence_parser import parse_nmap_output, format_evidence
 from executor import run_command
 from observer import observe
 from planner import plan_next_action
 from analyser import generate_report
+from evidence_parser import parse_nmap_output
 
 
 def run_agent(target_ip, max_iterations=1, log_callback=None):
@@ -37,16 +37,20 @@ def run_agent(target_ip, max_iterations=1, log_callback=None):
         log_callback=log_callback
     )
 
+    # ========================================================
+    # PARSE INITIAL NMAP EVIDENCE
+    # ========================================================
+
+    evidence = parse_nmap_output(last_output)
+
+    log(
+        f"[AGENT] Evidence parser detected "
+        f"{len(evidence['ports'])} port entries."
+    )
+
     history.append(
         f"ACTION: {first_command}\n"
         f"RESULT:\n{last_output}"
-    )
-
-    initial_evidence = parse_nmap_output(last_output)
-
-    history.append(
-        "VERIFIED EVIDENCE:\n"
-        + format_evidence(initial_evidence)
     )
 
     # ========================================================
@@ -101,16 +105,20 @@ def run_agent(target_ip, max_iterations=1, log_callback=None):
             log_callback=log_callback
         )
 
+        # ----------------------------------------------------
+        # PARSE NEW EVIDENCE
+        # ----------------------------------------------------
+
+        new_evidence = parse_nmap_output(last_output)
+
+        log(
+            f"[AGENT] Evidence parser detected "
+            f"{len(new_evidence['ports'])} port entries."
+        )
+
         history.append(
             f"ACTION: {next_command}\n"
             f"RESULT:\n{last_output}"
-        )
-
-        iteration_evidence = parse_nmap_output(last_output)
-
-            history.append(
-            "VERIFIED EVIDENCE:\n"
-            + format_evidence(iteration_evidence)
         )
 
     # ========================================================
