@@ -238,7 +238,7 @@ with st.sidebar:
     menu_selection = st.radio(
         "Navigation",
         [
-            "🎯 Penetrate!",
+            "🎯 Penetrate",
             "📊 Reports",
             "⚙️ Settings",
             "ℹ️ About"
