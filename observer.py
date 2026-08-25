@@ -1,5 +1,5 @@
 from llm_client import ask_llm
-from evidence_parser import (
+from parser import (
     parse_nmap_output,
     format_evidence_for_llm
 )
