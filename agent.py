@@ -1,5 +1,6 @@
 import time
 
+from evidence_parser import parse_nmap_output, format_evidence
 from executor import run_command
 from observer import observe
 from planner import plan_next_action
@@ -39,6 +40,13 @@ def run_agent(target_ip, max_iterations=2, log_callback=None):
     history.append(
         f"ACTION: {first_command}\n"
         f"RESULT:\n{last_output}"
+    )
+
+    initial_evidence = parse_nmap_output(last_output)
+
+    history.append(
+        "VERIFIED EVIDENCE:\n"
+        + format_evidence(initial_evidence)
     )
 
     # ========================================================
@@ -96,6 +104,13 @@ def run_agent(target_ip, max_iterations=2, log_callback=None):
         history.append(
             f"ACTION: {next_command}\n"
             f"RESULT:\n{last_output}"
+        )
+
+        iteration_evidence = parse_nmap_output(last_output)
+
+            history.append(
+            "VERIFIED EVIDENCE:\n"
+            + format_evidence(iteration_evidence)
         )
 
     # ========================================================
