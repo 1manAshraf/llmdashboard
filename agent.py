@@ -4,7 +4,7 @@ from executor import run_command
 from observer import observe
 from planner import plan_next_action
 from analyser import generate_report
-from evidence_parser import parse_nmap_output
+from parser import parse_nmap_output
 
 
 def run_agent(target_ip, max_iterations=1, log_callback=None):
@@ -141,14 +141,15 @@ def run_agent(target_ip, max_iterations=1, log_callback=None):
     # REPORT
     # ========================================================
     
-    log("[AGENT] Generating report...")
-    
-    # Parse the final Nmap output into verified evidence
-    from parser import parse_nmap_output
+    log("[AGENT] Parsing verified Nmap evidence...")
     
     parsed_evidence = parse_nmap_output(
         last_output
     )
+    
+    log("[AGENT] Nmap evidence parsed successfully.")
+    
+    log("[AGENT] Generating report...")
     
     report, filename = generate_report(
         target_ip,
