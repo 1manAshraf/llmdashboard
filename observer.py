@@ -1,4 +1,8 @@
 from llm_client import ask_llm
+from evidence_parser import (
+    parse_nmap_output,
+    format_evidence_for_llm
+)
 
 
 def observe(raw_output, log_callback=None):
@@ -9,82 +13,75 @@ def observe(raw_output, log_callback=None):
         if log_callback:
             log_callback(message)
 
-    log("[OBSERVER] Analysing Nmap output...")
-
-    # ========================================================
-    # CHECK OUTPUT
-    # ========================================================
+    log("[OBSERVER] Parsing Nmap evidence...")
 
     if not raw_output:
         return "[OBSERVER ERROR] No output received."
 
-    # Limit the amount of data sent to the LLM.
-    if len(raw_output) > 4000:
-        raw_output = raw_output[:4000]
+    # ========================================================
+    # PARSE NMAP OUTPUT
+    # ========================================================
+
+    evidence = parse_nmap_output(raw_output)
+
+    if not evidence["ports"]:
+        log("[OBSERVER] No ports detected.")
+        return "[OBSERVER] No verified open ports detected."
 
     # ========================================================
-    # STRUCTURED ANALYSIS PROMPT
+    # FORMAT VERIFIED EVIDENCE
+    # ========================================================
+
+    structured_evidence = format_evidence_for_llm(evidence)
+
+    log(
+        f"[OBSERVER] Parsed {len(evidence['ports'])} port entries."
+    )
+
+    # ========================================================
+    # LLM ANALYSIS
     # ========================================================
 
     prompt = f"""
-You are the observation component of an authorized
-penetration-testing laboratory system.
+You are an authorized penetration-testing assistant
+operating inside an isolated security assessment laboratory.
 
-Your job is ONLY to extract information explicitly present
-in the Nmap output.
+You are given VERIFIED evidence extracted from Nmap.
 
-Do NOT guess.
+Your job is to analyse the evidence.
 
-Do NOT invent:
-- vulnerabilities
-- CVEs
-- software versions
-- operating systems
-- credentials
-- exploitation results
-- attack success
-- security ratings
+IMPORTANT RULES:
 
-If information is not explicitly present, write:
-NOT STATED
+1. Only use information explicitly present in the evidence.
+2. Do NOT invent vulnerabilities.
+3. Do NOT invent CVEs.
+4. Do NOT assume that an old software version automatically
+   means a specific vulnerability exists.
+5. Do NOT claim exploitation occurred.
+6. Do NOT claim credentials were discovered.
+7. Do NOT invent operating-system details.
+8. Do NOT provide arbitrary shell commands.
+9. If evidence is insufficient to identify a vulnerability,
+   explicitly say so.
+10. Distinguish between:
+    - observed fact
+    - potential security concern
+    - information that requires further verification.
 
-For every detected service, return exactly this format:
+Return no more than 8 lines.
 
-PORT: <port number>
-PROTOCOL: <protocol>
-SERVICE: <service name or NOT STATED>
-VERSION: <exact version from Nmap or NOT STATED>
-EVIDENCE: <short quotation/paraphrase of what Nmap reported>
-STATUS: CANDIDATE
+Use this format:
 
-If a possible security concern is directly supported by the
-Nmap output, add:
+OPEN PORTS:
+SERVICE VERSIONS:
+SECURITY CONCERNS:
+EVIDENCE LIMITATIONS:
+RECOMMENDED RECONNAISSANCE:
 
-POTENTIAL ISSUE: <issue>
-BASIS: <exact evidence supporting the issue>
+VERIFIED NMAP EVIDENCE:
 
-Otherwise write:
-
-POTENTIAL ISSUE: NONE
-BASIS: NONE
-
-Important:
-
-A service being open does NOT automatically mean it is
-vulnerable.
-
-Do not classify a vulnerability as VERIFIED.
-
-Return only information supported by the Nmap output.
-
-NMAP OUTPUT:
-
-{raw_output}
+{structured_evidence}
 """
-
-    # ========================================================
-    # ASK LLM
-    # ========================================================
 
     result = ask_llm(prompt)
 
@@ -96,12 +93,17 @@ NMAP OUTPUT:
 
         log(result)
 
-        return result
+        # Return the verified evidence even if
+        # the LLM is unavailable.
 
-    # ========================================================
-    # SUCCESS
-    # ========================================================
+        return structured_evidence
 
-    log("[OBSERVER] Structured analysis completed.")
+    log("[OBSERVER] Evidence analysis completed.")
 
-    return result
+    return (
+        "VERIFIED EVIDENCE:\n"
+        + structured_evidence
+        + "\n\n"
+        "LLM ANALYSIS:\n"
+        + result
+    )
