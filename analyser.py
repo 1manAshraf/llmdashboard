@@ -22,7 +22,7 @@ def generate_report(target_ip, history, time_taken="N/A"):
 
     # Prevent an excessively large prompt.
     if len(history_text) > 5000:
-        history_text = history_text[:5000]
+        history_text = history_text[:2500]
 
     # ========================================================
     # REPORT PROMPT
