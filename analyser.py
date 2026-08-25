@@ -1,63 +1,10 @@
 from llm_client import ask_llm
+from parser import format_evidence_for_llm
 from datetime import datetime
 from pathlib import Path
 
 
 REPORT_DIRECTORY = Path("reports")
-
-
-def build_verified_evidence(parsed_evidence):
-    """
-    Convert parser output into a strict evidence block.
-
-    The LLM must only use information contained here.
-    """
-
-    lines = []
-
-    lines.append("VERIFIED NMAP EVIDENCE")
-    lines.append("=" * 40)
-
-    lines.append(
-        f"Target: {parsed_evidence.get('target', 'Unknown')}"
-    )
-
-    lines.append(
-        f"Host Up: {parsed_evidence.get('host_up', 'Unknown')}"
-    )
-
-    lines.append("")
-    lines.append("Detected Ports:")
-
-    ports = parsed_evidence.get("ports", [])
-
-    if ports:
-
-        for port in ports:
-
-            lines.append(
-                f"- {port.get('port')}/"
-                f"{port.get('protocol', 'tcp')} | "
-                f"{port.get('state')} | "
-                f"{port.get('service')} | "
-                f"{port.get('version', 'Unknown')}"
-            )
-
-    else:
-
-        lines.append("- No verified open ports.")
-
-    os_info = parsed_evidence.get("os", [])
-
-    if os_info:
-
-        lines.append("")
-        lines.append("OS Information:")
-
-        for os_name in os_info:
-            lines.append(f"- {os_name}")
-
-    return "\n".join(lines)
 
 
 def generate_report(
@@ -70,64 +17,95 @@ def generate_report(
 
     REPORT_DIRECTORY.mkdir(exist_ok=True)
 
-    verified_evidence = build_verified_evidence(
+    # ========================================================
+    # VERIFIED EVIDENCE
+    # ========================================================
+
+    verified_evidence = format_evidence_for_llm(
         parsed_evidence
     )
 
+    print("\n[ANALYSER] Verified evidence sent to LLM:")
+    print(verified_evidence)
+
+    # ========================================================
+    # LLM PROMPT
+    # ========================================================
+
     prompt = f"""
-You are a cybersecurity report writer.
+You are a cybersecurity report writer working in an
+authorized penetration-testing laboratory.
 
-You are writing a report for an authorized penetration-testing
-laboratory.
+Your job is to write a professional security assessment
+report using ONLY the VERIFIED NMAP EVIDENCE below.
 
-IMPORTANT RULE:
+IMPORTANT EVIDENCE RULES:
 
-The VERIFIED NMAP EVIDENCE below is the ONLY source of truth.
+The verified evidence is the source of truth.
 
-You MUST NOT invent:
+DO NOT invent:
 
-- CVEs
+- ports
+- services
+- service versions
 - vulnerabilities
+- CVEs
 - exploits
 - credentials
 - attack success
-- software versions
 - operating systems
-- security weaknesses
 - technologies
-- services
-- vulnerability names
+- configurations
+- security controls
 
-If a vulnerability cannot be directly supported by the
-verified evidence, do NOT report it as a vulnerability.
-
-You may identify an obvious security concern when it is directly
-supported by the evidence.
+DO NOT change a port number.
 
 For example:
 
-If Telnet is explicitly detected:
-You may state that Telnet is an insecure, unencrypted protocol.
+If the evidence says:
 
-If an old software version is explicitly detected:
-You may state that the software version is outdated or should
-be reviewed.
+512/tcp
 
-However, do NOT assign a specific CVE unless the evidence
-explicitly contains that CVE.
+you MUST NOT report:
 
-Do not infer vulnerabilities merely from a software version.
+513/tcp
+
+If a vulnerability is not directly supported by the
+evidence, do not claim that the vulnerability exists.
+
+An outdated software version alone does NOT prove that
+a specific vulnerability exists.
+
+Do not invent CVEs from memory.
 
 Do not claim that a service is exploitable.
 
-Do not claim that exploitation was successful.
+Do not claim that penetration was successful.
 
-Do not mention tools that are not present in the evidence.
+Clearly distinguish between:
 
-Use only the verified information below.
+1. Verified findings
+2. Security observations
+3. Recommendations
+
+For example:
+
+Telnet being detected may be described as a security
+concern because Telnet communicates without encryption.
+
+However, do not claim that the target was successfully
+compromised.
+
+Do not generate attack commands.
+
+Do not generate Metasploit commands.
+
+Do not generate shell commands.
+
+Do not recommend attacking another host.
 
 --------------------------------------------------
-VERIFIED EVIDENCE
+VERIFIED NMAP EVIDENCE
 --------------------------------------------------
 
 {verified_evidence}
@@ -143,60 +121,92 @@ Date:
 Time taken:
 {time_taken}
 
-Generate the report using exactly these sections:
+--------------------------------------------------
+
+Generate a professional penetration-testing report.
+
+Use exactly these sections:
 
 1. Executive Summary
+
 2. Reconnaissance Findings
+
 3. Services Detected
+
 4. Security Observations
+
 5. Risk Rating
+
 6. Recommendations
 
-For Security Observations:
+--------------------------------------------------
 
-Only include observations supported by the evidence.
+REQUIREMENTS FOR EACH SECTION
 
-For Risk Rating:
+Executive Summary:
+Summarize what was actually detected.
 
-Use:
-- Informational
-- Low
-- Medium
-- High
+Reconnaissance Findings:
+List only verified Nmap findings.
 
-Do not assign a high or critical rating without sufficient
-evidence.
+Services Detected:
+List the detected ports, services and versions.
 
-For Recommendations:
+Security Observations:
+Only identify security concerns supported by
+the verified evidence.
 
-Give defensive recommendations based only on the detected
-services and information.
+If there is insufficient evidence for a vulnerability,
+explicitly state:
 
-Do not recommend exploitation.
+"No confirmed vulnerability identified from the
+available Nmap evidence."
 
-Do not generate Nmap commands.
+Risk Rating:
+Use one of:
 
-Do not generate Metasploit commands.
+Informational
+Low
+Medium
+High
 
-Do not generate shell commands.
+Do not assign a high rating without sufficient evidence.
 
-The report must clearly distinguish between:
+Recommendations:
+Provide defensive recommendations based on the
+detected services.
 
-- verified facts
-- security observations
-- recommendations
+Do not invent vulnerabilities to justify recommendations.
 
+--------------------------------------------------
+
+IMPORTANT:
+
+The final report must never contain facts that are
+different from the VERIFIED NMAP EVIDENCE.
 """
 
+    # ========================================================
+    # ASK LLM
+    # ========================================================
+
     report = ask_llm(prompt)
+
+    # ========================================================
+    # LLM ERROR HANDLING
+    # ========================================================
 
     if report.startswith("[LLM ERROR]"):
 
         report = (
-            "Report generation failed because the LLM could not "
-            "be reached.\n\n"
+            "Report generation failed because the LLM could "
+            "not be reached.\n\n"
             + report
         )
+
+    # ========================================================
+    # FINAL REPORT
+    # ========================================================
 
     final_report = (
         f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
@@ -206,6 +216,10 @@ The report must clearly distinguish between:
         + "\n\n"
         + report
     )
+
+    # ========================================================
+    # SAVE REPORT
+    # ========================================================
 
     safe_target = (
         target_ip
