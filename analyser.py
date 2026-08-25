@@ -6,210 +6,189 @@ from pathlib import Path
 REPORT_DIRECTORY = Path("reports")
 
 
-def generate_report(target_ip, history, time_taken="N/A"):
+def build_verified_evidence(parsed_evidence):
+    """
+    Convert parser output into a strict evidence block.
 
-    print("\n[ANALYSER] Generating evidence-based report...")
+    The LLM must only use information contained here.
+    """
+
+    lines = []
+
+    lines.append("VERIFIED NMAP EVIDENCE")
+    lines.append("=" * 40)
+
+    lines.append(
+        f"Target: {parsed_evidence.get('target', 'Unknown')}"
+    )
+
+    lines.append(
+        f"Host Up: {parsed_evidence.get('host_up', 'Unknown')}"
+    )
+
+    lines.append("")
+    lines.append("Detected Ports:")
+
+    ports = parsed_evidence.get("ports", [])
+
+    if ports:
+
+        for port in ports:
+
+            lines.append(
+                f"- {port.get('port')}/"
+                f"{port.get('protocol', 'tcp')} | "
+                f"{port.get('state')} | "
+                f"{port.get('service')} | "
+                f"{port.get('version', 'Unknown')}"
+            )
+
+    else:
+
+        lines.append("- No verified open ports.")
+
+    os_info = parsed_evidence.get("os", [])
+
+    if os_info:
+
+        lines.append("")
+        lines.append("OS Information:")
+
+        for os_name in os_info:
+            lines.append(f"- {os_name}")
+
+    return "\n".join(lines)
+
+
+def generate_report(
+    target_ip,
+    parsed_evidence,
+    time_taken="N/A"
+):
+
+    print("\n[ANALYSER] Generating report...")
 
     REPORT_DIRECTORY.mkdir(exist_ok=True)
 
-    # ========================================================
-    # PREPARE SESSION DATA
-    # ========================================================
-
-    recent = history[-6:]
-
-    history_text = "\n\n".join(recent)
-
-    # Prevent an excessively large prompt.
-    if len(history_text) > 5000:
-        history_text = history_text[:2500]
-
-    # ========================================================
-    # REPORT PROMPT
-    # ========================================================
+    verified_evidence = build_verified_evidence(
+        parsed_evidence
+    )
 
     prompt = f"""
-You are the reporting component of an authorized penetration-
-testing laboratory system.
+You are a cybersecurity report writer.
 
-Your job is to create an evidence-based security assessment
-report from the supplied session information.
+You are writing a report for an authorized penetration-testing
+laboratory.
 
-IMPORTANT RULES:
+IMPORTANT RULE:
 
-1. Use ONLY information explicitly contained in the session.
-2. Never invent information.
-3. Never assume that an old software version is vulnerable.
-4. Never claim a CVE unless the session explicitly contains
-   evidence for that CVE.
-5. Never claim exploitation.
-6. Never claim successful compromise.
-7. Never claim credentials were obtained.
-8. Never claim a vulnerability was verified unless the session
-   explicitly contains verification evidence.
-9. An open port is NOT automatically a vulnerability.
-10. A detected software version is NOT automatically a
-    vulnerability.
-11. Do not invent operating systems or service versions.
-12. Do not invent additional services.
-13. Do not invent scan results.
-14. Do not use information from your general knowledge to
-    create vulnerabilities that are not demonstrated by the
-    session.
+The VERIFIED NMAP EVIDENCE below is the ONLY source of truth.
 
-Use these categories:
+You MUST NOT invent:
 
-OBSERVED
----------
-Information directly reported by the security tools.
+- CVEs
+- vulnerabilities
+- exploits
+- credentials
+- attack success
+- software versions
+- operating systems
+- security weaknesses
+- technologies
+- services
+- vulnerability names
 
-CANDIDATE
----------
-A potential security concern that may require additional
-verification.
+If a vulnerability cannot be directly supported by the
+verified evidence, do NOT report it as a vulnerability.
 
-VERIFIED
---------
-A vulnerability for which the session contains explicit
-verification evidence.
+You may identify an obvious security concern when it is directly
+supported by the evidence.
 
-If there is no verification evidence, write:
+For example:
 
-"No vulnerabilities were verified during this session."
+If Telnet is explicitly detected:
+You may state that Telnet is an insecure, unencrypted protocol.
 
-Do NOT convert CANDIDATE findings into VERIFIED findings.
+If an old software version is explicitly detected:
+You may state that the software version is outdated or should
+be reviewed.
 
-------------------------------------------------------------
-TARGET
-------------------------------------------------------------
+However, do NOT assign a specific CVE unless the evidence
+explicitly contains that CVE.
 
+Do not infer vulnerabilities merely from a software version.
+
+Do not claim that a service is exploitable.
+
+Do not claim that exploitation was successful.
+
+Do not mention tools that are not present in the evidence.
+
+Use only the verified information below.
+
+--------------------------------------------------
+VERIFIED EVIDENCE
+--------------------------------------------------
+
+{verified_evidence}
+
+--------------------------------------------------
+
+Target:
 {target_ip}
 
-------------------------------------------------------------
-DATE
-------------------------------------------------------------
-
+Date:
 {datetime.now().strftime("%Y-%m-%d")}
 
-------------------------------------------------------------
-TIME TAKEN
-------------------------------------------------------------
-
+Time taken:
 {time_taken}
 
-------------------------------------------------------------
-SESSION EVIDENCE
-------------------------------------------------------------
+Generate the report using exactly these sections:
 
-{history_text}
+1. Executive Summary
+2. Reconnaissance Findings
+3. Services Detected
+4. Security Observations
+5. Risk Rating
+6. Recommendations
 
-============================================================
-REPORT FORMAT
-============================================================
+For Security Observations:
 
-# Penetration Testing Report
+Only include observations supported by the evidence.
 
-## 1. Executive Summary
+For Risk Rating:
 
-Briefly summarize what was actually observed.
+Use:
+- Informational
+- Low
+- Medium
+- High
 
-Clearly state whether vulnerabilities were verified.
+Do not assign a high or critical rating without sufficient
+evidence.
 
-Do not exaggerate the results.
+For Recommendations:
 
-## 2. Reconnaissance Findings
+Give defensive recommendations based only on the detected
+services and information.
 
-List only information directly supported by the session.
+Do not recommend exploitation.
 
-Include:
+Do not generate Nmap commands.
 
-- Target
-- Open ports
-- Protocols
-- Services
-- Versions
-- Other directly observed information
+Do not generate Metasploit commands.
 
-## 3. Observed Services
+Do not generate shell commands.
 
-Create a simple list or table containing:
+The report must clearly distinguish between:
 
-Port | Protocol | Service | Version | Evidence
+- verified facts
+- security observations
+- recommendations
 
-Only include services actually present in the session.
-
-## 4. Candidate Security Issues
-
-List potential security concerns that are supported by
-the evidence.
-
-For each candidate include:
-
-Issue:
-Evidence:
-Why further verification may be appropriate:
-Status: CANDIDATE
-
-Do not call these vulnerabilities.
-
-If there are none, write:
-
-"No candidate security issues were identified."
-
-## 5. Verified Vulnerabilities
-
-Only include vulnerabilities that have explicit verification
-evidence in the session.
-
-For each verified vulnerability include:
-
-Vulnerability:
-Evidence:
-Verification:
-Status: VERIFIED
-
-If none were verified, write:
-
-"No vulnerabilities were verified during this session."
-
-## 6. Risk Assessment
-
-Do NOT assign a risk rating to an unverified vulnerability.
-
-If no vulnerabilities were verified, state:
-
-"Overall risk could not be determined from verified
-vulnerability evidence. Further verification is recommended."
-
-You may describe the attack surface based on observed services,
-but do not turn that observation into a vulnerability rating.
-
-## 7. Recommendations
-
-Recommendations must correspond to observed services or
-candidate findings.
-
-Do not recommend fixing vulnerabilities that were never
-identified.
-
-============================================================
-
-Return ONLY the report.
-
-SESSION EVIDENCE:
-
-{history_text}
 """
 
-    # ========================================================
-    # CALL LLM
-    # ========================================================
-
     report = ask_llm(prompt)
-
-    # ========================================================
-    # HANDLE LLM ERROR
-    # ========================================================
 
     if report.startswith("[LLM ERROR]"):
 
@@ -218,10 +197,6 @@ SESSION EVIDENCE:
             "be reached.\n\n"
             + report
         )
-
-    # ========================================================
-    # FINAL REPORT
-    # ========================================================
 
     final_report = (
         f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
@@ -232,10 +207,6 @@ SESSION EVIDENCE:
         + report
     )
 
-    # ========================================================
-    # FILE NAME
-    # ========================================================
-
     safe_target = (
         target_ip
         .replace(".", "_")
@@ -243,13 +214,9 @@ SESSION EVIDENCE:
     )
 
     filename = (
-        REPORT_DIRECTORY /
-        f"report_{safe_target}.txt"
+        REPORT_DIRECTORY
+        / f"report_{safe_target}.txt"
     )
-
-    # ========================================================
-    # SAVE REPORT
-    # ========================================================
 
     with open(
         filename,
@@ -260,7 +227,7 @@ SESSION EVIDENCE:
         f.write(final_report)
 
     print(
-        f"[ANALYSER] Evidence-based report saved: {filename}"
+        f"[ANALYSER] Saved: {filename}"
     )
 
     return final_report, str(filename)
