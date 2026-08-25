@@ -7,7 +7,7 @@ from planner import plan_next_action
 from analyser import generate_report
 
 
-def run_agent(target_ip, max_iterations=1, log_callback=None):
+def run_agent(target_ip, max_iterations=3, log_callback=None):
 
     def log(message):
         print(message)
