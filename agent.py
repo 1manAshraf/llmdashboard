@@ -140,15 +140,22 @@ def run_agent(target_ip, max_iterations=1, log_callback=None):
     # ========================================================
     # REPORT
     # ========================================================
-
+    
     log("[AGENT] Generating report...")
-
+    
+    # Parse the final Nmap output into verified evidence
+    from parser import parse_nmap_output
+    
+    parsed_evidence = parse_nmap_output(
+        last_output
+    )
+    
     report, filename = generate_report(
         target_ip,
-        history,
+        parsed_evidence,
         time_str
     )
-
+    
     log(f"[AGENT] Report saved: {filename}")
-
+    
     return report, filename
