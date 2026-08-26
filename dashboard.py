@@ -346,7 +346,7 @@ with st.sidebar:
 # PENETRATE PAGE
 # ============================================================
 
-if menu_selection == "🎯 Penetrate!":
+if menu_selection == "🎯 Penetrate":
 
     st.title("🎯 Target Execution Panel")
 
