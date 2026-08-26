@@ -496,7 +496,7 @@ if menu_selection == "🎯 Penetrate":
 
                 report, filename = run_agent(
                     target,
-                    max_iterations=3,
+                    max_iterations=1,
                     log_callback=dashboard_log
                 )
 
